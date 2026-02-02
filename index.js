@@ -1,8 +1,3 @@
-const buttons = document.querySelectorAll(".number");
-const opertors = document.querySelectorAll(".operator")
-let display = document.querySelector("#display");
-
-
 const add = (a, b) => {
   return a + b;
 };
@@ -16,13 +11,15 @@ const mul = (a, b) => {
 }
 
 const div = (a, b) => {
+    if (b == 0) {
+      return "Can't divide by Number, Click clear button";
+    }
     return a / b;
 };
 
 let firstNumber = '';
 let operator = '';
 let secondNumber = '';
-let displayValue = "";
 
 const operate =  (num1, num2, op) => {
   num1 = Number(num1);
@@ -41,51 +38,47 @@ const operate =  (num1, num2, op) => {
   }
 };
 
-function handleNumberClick(number) {
-  if (operator == "") {
-    firstNumber += number;
-    display.textContent = firstNumber;
-  } else {
-    secondNumber += number;
-    display.textContent = secondNumber;
-  }
-}
+const buttons = document.querySelectorAll(".number");
+const operators = document.querySelectorAll(".operator");
+let display = document.querySelector("#display");
 
-function handleOperatorClick(op) {
-  if (firstNumber === "") return;
-
-  if (secondNumber !== "") {
-    let result = operate(firstNumber, secondNumber, operator);
-    firstNumber = result.toString();
-    display.textContent = firstNumber;
-    secondNumber = "";
-  }
-
-  operator = op
-  display.textContent = op
-}
-
-
-buttons.forEach((button) => {
+buttons.forEach(button => {
   button.addEventListener('click', () => {
-    handleNumberClick(button.textContent);
+    if (operator == "") {
+      firstNumber += button.textContent;
+      display.textContent = firstNumber;
+    } else {
+      secondNumber += button.textContent;
+      display.textContent = secondNumber;
+    }
   });
 });
 
-opertors.forEach((op) => {
+operators.forEach(op => {
   op.addEventListener('click', () => {
-    handleOperatorClick(op.textContent)
+    if (firstNumber !== "" && secondNumber !== "") {
+      firstNumber = operate(firstNumber, secondNumber, operator);
+      display.textContent = firstNumber;
+      secondNumber = "";
+    }
+    operator = op.textContent;
+    display.textContent += operator
   });
-})
+});
 
-document.querySelector('.clear').addEventListener('click', () => {
-  firstNumber = '';
-  operator = '';
-  secondNumber = '';
+document.querySelector(".equals").addEventListener('click', () => {
+  if (firstNumber && secondNumber && operator) {
+    const result = operate(firstNumber, secondNumber, operator);
+    display.textContent = result;
+    firstNumber = result;
+    secondNumber = "";
+    operator = "";
+  }
+});
+
+document.querySelector(".clear").addEventListener('click', () => {
+  firstNumber = "";
+  secondNumber = "";
+  operator = "";
   display.textContent = "0";
 })
-
-document.querySelector('.equals').addEventListener('click', () => {
-  
-})
-
